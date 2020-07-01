@@ -1,5 +1,5 @@
 //
-//  ShopItem.swift
+//  Item.swift
 //  BofinTest
 //
 //  Created by Michał Gałęziowski on 01/07/2020.
