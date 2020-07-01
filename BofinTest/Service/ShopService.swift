@@ -22,8 +22,8 @@ enum Promotion {
 		let outputCart = cart
 
 		cart.items.forEach {
-			if $0 == .Orange {
-				outputCart.addItem(.Orange)
+			if $0 == .Apple {
+				outputCart.addItem(.Apple)
 			}
 		}
 

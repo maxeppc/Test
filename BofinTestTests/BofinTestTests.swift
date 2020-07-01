@@ -72,8 +72,8 @@ class BofinShopServiceTest: XCTestCase {
 
 	func test_Promotion_OneFreeApple() {
 		let promotion: Promotion = .OneFreeApple
-		let itemsToCart: [Item] = [.Orange]
-		let value = 2 * Item.Orange.price
+		let itemsToCart: [Item] = [.Apple]
+		let value = 2 * Item.Apple.price
 		let cart = ShopCart()
 
 		itemsToCart.forEach { cart.addItem($0) }
@@ -84,13 +84,13 @@ class BofinShopServiceTest: XCTestCase {
 	}
 
 	func test_ShopService_checkoutWithPromotion() {
-		let itemsToCart: [Item] = [.Orange, .Orange, .Apple]
+		let itemsToCart: [Item] = [.Apple, .Orange, .Apple]
 
 		shopService?.addPromotion(.OneFreeApple)
 		shopService?.addItems(itemsToCart)
 
 		let sut = shopService?.getShoppingValue()
-		let value = 4 * Item.Orange.price + Item.Apple.price
+		let value = 4 * Item.Apple.price + Item.Orange.price
 
 		XCTAssertEqual(sut, value, "Wrong calculation")
 	}
