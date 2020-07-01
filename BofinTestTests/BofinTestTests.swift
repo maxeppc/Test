@@ -59,4 +59,39 @@ class BofinShopServiceTest: XCTestCase {
 
 		XCTAssert(sut == 2.05, "Shopping cart value is wrong")
 	}
+
+	func test_ShopService_addPromotion() {
+		let promotion: Promotion = .OneFreeApple
+
+		shopService?.addPromotion(promotion)
+
+		let sut = shopService?.promotions.last
+
+		XCTAssert(promotion == sut, "Wrong promotion in array")
+	}
+
+	func test_Promotion_OneFreeApple() {
+		let promotion: Promotion = .OneFreeApple
+		let itemsToCart: [Item] = [.Orange]
+		let value = 2 * Item.Orange.price
+		let cart = ShopCart()
+
+		itemsToCart.forEach { cart.addItem($0) }
+
+		let sut = promotion.calculation(cart: cart)
+
+		XCTAssertEqual(sut.totalValue, value, "Wrong calculation")
+	}
+
+	func test_ShopService_checkoutWithPromotion() {
+		let itemsToCart: [Item] = [.Orange, .Orange, .Apple]
+
+		shopService?.addPromotion(.OneFreeApple)
+		shopService?.addItems(itemsToCart)
+
+		let sut = shopService?.getShoppingValue()
+		let value = 4 * Item.Orange.price + Item.Apple.price
+
+		XCTAssertEqual(sut, value, "Wrong calculation")
+	}
 }

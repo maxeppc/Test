@@ -8,8 +8,32 @@
 
 import Foundation
 
+enum Promotion {
+	case OneFreeApple
+
+	func calculation(cart: ShopCart) -> ShopCart {
+		switch self {
+			case .OneFreeApple:
+				return oneFreeApplePromotion(cart: cart)
+		}
+	}
+
+	private func oneFreeApplePromotion(cart: ShopCart) -> ShopCart {
+		let outputCart = cart
+
+		cart.items.forEach {
+			if $0 == .Orange {
+				outputCart.addItem(.Orange)
+			}
+		}
+
+		return outputCart
+	}
+}
+
 class ShopService {
 	private(set) var cart: ShopCart?
+	private(set) var promotions: [Promotion] = []
 
 	func startShoppings() {
 		cart = ShopCart()
@@ -21,9 +45,21 @@ class ShopService {
 		}
 
 		items.forEach { cart?.addItem($0) }
+
+		promotions.forEach {
+			if let cart = cart {
+				self.cart = $0.calculation(cart: cart)
+			}
+		}
 	}
 
 	func getShoppingValue() -> Double {
 		return cart?.totalValue ?? 0.0
+	}
+
+	func addPromotion(_ promotion: Promotion) {
+		if !promotions.contains(promotion) {
+			promotions.append(promotion)
+		}
 	}
 }
