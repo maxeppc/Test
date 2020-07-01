@@ -15,7 +15,7 @@ enum Item {
 	var price: Double {
 		switch self {
 		case .Orange: return 0.25
-			case .Apple: return 0.6
+		case .Apple: return 0.6
 		}
 	}
 }

@@ -10,11 +10,12 @@ import Foundation
 
 enum Promotion {
 	case OneFreeApple
+	case ThreeOrangesForTwo
 
 	func calculation(cart: ShopCart) -> ShopCart {
 		switch self {
-			case .OneFreeApple:
-				return oneFreeApplePromotion(cart: cart)
+			case .OneFreeApple: return oneFreeApplePromotion(cart: cart)
+			case .ThreeOrangesForTwo: return threeOrangesForFreePromotion(cart: cart)
 		}
 	}
 
@@ -25,6 +26,19 @@ enum Promotion {
 			if $0 == .Apple {
 				outputCart.addItem(.Apple)
 			}
+		}
+
+		return outputCart
+	}
+
+	private func threeOrangesForFreePromotion(cart: ShopCart) -> ShopCart {
+		let outputCart = cart
+
+		let orangesCount = cart.items.filter { $0 == .Orange }.count
+
+		if orangesCount >= 3 {
+			let bonuses = orangesCount / 3
+			outputCart.bonus = Double(bonuses) * Item.Orange.price
 		}
 
 		return outputCart
@@ -45,16 +59,18 @@ class ShopService {
 		}
 
 		items.forEach { cart?.addItem($0) }
+	}
+
+	func doCheckout() -> Double {
+		var outputCart = cart
 
 		promotions.forEach {
 			if let cart = cart {
-				self.cart = $0.calculation(cart: cart)
+				outputCart = $0.calculation(cart: cart)
 			}
 		}
-	}
 
-	func getShoppingValue() -> Double {
-		return cart?.totalValue ?? 0.0
+		return outputCart?.totalValue ?? 0.0
 	}
 
 	func addPromotion(_ promotion: Promotion) {

@@ -45,12 +45,12 @@ class BofinShopServiceTest: XCTestCase {
 		XCTAssert(sut == itemsToAdd.count, "Items not added correctly to cart")
 	}
 
-	func test_ShopService_doCheckout() {
+	func test_ShopService_doCheckout_withoutPromotions() {
 		let itemsToAdd = [Item.Apple, Item.Apple, Item.Orange, Item.Apple]
 
 		shopService?.addItems(itemsToAdd)
 
-		guard let sut = shopService?.getShoppingValue() else {
+		guard let sut = shopService?.doCheckout() else {
 			XCTFail("Optional error")
 			return
 		}
@@ -83,14 +83,40 @@ class BofinShopServiceTest: XCTestCase {
 		XCTAssertEqual(sut.totalValue, value, "Wrong calculation")
 	}
 
-	func test_ShopService_checkoutWithPromotion() {
+	func test_Promotion_ThreeOrangesForTwo() {
+		let promotion: Promotion = .ThreeOrangesForTwo
+		let itemsToCart: [Item] = Array(repeating: .Orange, count: 13)
+		let value = 9 * Item.Orange.price
+		let cart = ShopCart()
+
+		itemsToCart.forEach { cart.addItem($0) }
+
+		let sut = promotion.calculation(cart: cart)
+
+		XCTAssertEqual(sut.totalValue, value, "Wrong calculation")
+	}
+
+	func test_ShopService_checkoutWithOnePromotion() {
 		let itemsToCart: [Item] = [.Apple, .Orange, .Apple]
 
 		shopService?.addPromotion(.OneFreeApple)
 		shopService?.addItems(itemsToCart)
 
-		let sut = shopService?.getShoppingValue()
+		let sut = shopService?.doCheckout()
 		let value = 4 * Item.Apple.price + Item.Orange.price
+
+		XCTAssertEqual(sut, value, "Wrong calculation")
+	}
+
+	func test_ShopService_checkoutWithTwoPromotions() {
+		let itemsToCart: [Item] = [.Apple, .Orange, .Apple, .Orange, .Orange, .Apple, .Orange]
+
+		shopService?.addPromotion(.OneFreeApple)
+		shopService?.addPromotion(.ThreeOrangesForTwo)
+		shopService?.addItems(itemsToCart)
+
+		let sut = shopService?.doCheckout()
+		let value = 6 * Item.Apple.price +  3 * Item.Orange.price
 
 		XCTAssertEqual(sut, value, "Wrong calculation")
 	}

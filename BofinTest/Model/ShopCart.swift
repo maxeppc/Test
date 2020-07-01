@@ -12,8 +12,10 @@ class ShopCart {
 	private(set) var items: [Item] = []
 
 	var totalValue: Double {
-		return items.reduce(0) { $0 + $1.price }
+		return items.reduce(0) { $0 + $1.price } - bonus
 	}
+
+	var bonus: Double = 0
 }
 
 extension ShopCart {
